@@ -41,9 +41,6 @@ class AgreementsProviderTest extends TestCase
      */
     protected $storeManagerMock;
 
-    /**
-     * @inheritDoc
-     */
     protected function setUp(): void
     {
         $objectManager = new ObjectManager($this);
@@ -65,10 +62,7 @@ class AgreementsProviderTest extends TestCase
         );
     }
 
-    /**
-    * @return void
-    */
-    public function testGetRequiredAgreementIdsIfAgreementsEnabled(): void
+    public function testGetRequiredAgreementIdsIfAgreementsEnabled()
     {
         $storeId = 100;
         $expectedResult = [1, 2, 3, 4, 5];
@@ -87,19 +81,20 @@ class AgreementsProviderTest extends TestCase
         $this->storeManagerMock->expects($this->once())->method('getStore')->willReturn($storeMock);
 
         $agreementCollection->expects($this->once())->method('addStoreFilter')->with($storeId)->willReturnSelf();
-        $agreementCollection
+        $agreementCollection->expects($this->at(1))
             ->method('addFieldToFilter')
-            ->withConsecutive(['is_active', 1], ['mode', AgreementModeOptions::MODE_MANUAL])
-            ->willReturnOnConsecutiveCalls($agreementCollection, $agreementCollection);
+            ->with('is_active', 1)
+            ->willReturnSelf();
+        $agreementCollection->expects($this->at(2))
+            ->method('addFieldToFilter')
+            ->with('mode', AgreementModeOptions::MODE_MANUAL)
+            ->willReturnSelf();
         $agreementCollection->expects($this->once())->method('getAllIds')->willReturn($expectedResult);
 
         $this->assertEquals($expectedResult, $this->model->getRequiredAgreementIds());
     }
 
-    /**
-    * @return void
-    */
-    public function testGetRequiredAgreementIdsIfAgreementsDisabled(): void
+    public function testGetRequiredAgreementIdsIfAgreementsDisabled()
     {
         $expectedResult = [];
         $this->scopeConfigMock->expects($this->once())
