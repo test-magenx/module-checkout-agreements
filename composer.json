@@ -1,5 +1,5 @@
 {
-    "name": "test-magenx/module-checkout-agreements",
+    "name": "magenxcommerce/module-checkout-agreements",
     "description": "N/A",
     "config": {
         "sort-packages": true
